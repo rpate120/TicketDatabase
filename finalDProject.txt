@@ -1,0 +1,250 @@
+import std.stdio;
+class Event
+{
+    public:
+        // Event constructor. Creates a new event that is sellable.Arguments: name, date, total tickets, age restriction
+        this(string name, string date, int totalTickets, int age)
+        {
+            setName(name);
+            setDate(date);
+            setAge(age);
+            availTickets = totalTickets;
+            ticketCounter = 0;
+        }
+        // Setter for: eventName
+        void setName(string name)
+        {
+            eventName = name;
+        }
+        // Setter for: eventDate
+        void setDate(string date)
+        {
+            eventDate = date;
+        }
+        // Setter for: eventAge
+        void setAge(int age)
+        {
+            eventAge = age;
+        }
+        // Getter for: eventName
+        string getName()
+        {
+            return eventName;
+        }
+        // Getter for: eventDate
+        string getDate()
+        {
+            return eventDate;
+        }
+        // Getter for: eventAge
+        int getAge()
+        {
+            return eventAge;
+        }
+        // Ticket amount avail
+        int getTickets()
+        {
+            return availTickets;
+        }
+        // Checks if tickets are avail
+        int ticketsAvail()
+        {
+            return (ticketCounter <= (availTickets-1));
+        }
+        // Sell a ticket. Returns ticket id.
+        int sellTicket() { return 0; }
+        // Get ticket. Returns a Ticket instance. Arguments: ticketID.
+        Ticket getTicket(int ticketID)
+        {
+            return soldTickets[ticketID];
+        }
+        void updateTickets(int n)
+        {
+            availTickets = availTickets - n;
+        }
+    private:
+        string eventName;
+        string eventDate;
+        int eventAge;
+        int availTickets;
+        int ticketCounter;
+        Ticket[int] soldTickets;
+}
+class TicketType
+{
+    public:
+        // TicketType constructor. Creates a new Ticket type. Arguments: name, price, age restriction (or 0 if none)
+        this(string name, double price, int age)
+        {
+            setName(name);
+            setPrice(price);
+            setAge(age);
+        }
+        // Setter for: name
+        void setName(string x)
+        {
+            name = x;
+        }
+        // Setter for: price
+        void setPrice(double x)
+        {
+            price = x;
+        }
+        // Setter for: age
+        void setAge(int x)
+        {
+            age = x;
+        }
+        string getName()
+        {
+             return name;
+        }
+        double getPrice()
+        {
+            return price;
+        }
+        int getAge()
+        {
+            return age;
+        }
+    private:
+        string name;
+        int age;
+        double price;
+}
+class Ticket
+{
+     public:
+         // Ticket constructor. Creates a new ticket based off a TicketType. Arguments: customer name, ticket type
+         this (string customerName, TicketType type)
+         {
+              setCustomer(customerName);
+              setTicket(type);
+         }
+         // Setter for: customerName
+         void setCustomer(string name)
+         {
+             customerName = name;
+         }
+         // Setter for: ticketType
+         void setTicket(TicketType type)
+         {
+             ticketType = type;
+         }
+         // Getter for: customerName
+         string getCustomer()
+         {
+             return customerName;
+         }
+         // Getter for: ticketType
+         TicketType getTicket()
+         {
+              return ticketType;
+         }
+    private:
+        string customerName;
+        TicketType ticketType;
+}
+int main(string[ ] args)//driver asking for input
+{
+    Event[int] events;
+    events[0] = new Event("Panthers v. Cowboys", "Sunday November 20th, 2016", 10, 0);
+    events[1] = new Event("College Night", "Saturday November 19th, 2016", 15, 18);
+    events[2] = new Event("Panthers v. Raiders", "Sunday November 27th, 2016", 30, 0);
+    events[3] = new Event("Stadium Tour", "Friday December 2nd, 2016", 20, 0);
+    events[4] = new Event("Panthers v. Chargers", "Sunday December 11th, 2016", 25, 0);
+    events[5] = new Event("Belk Bowl", "Thursday December 29th, 2016", 5, 0);
+    Event activeEvent;
+    int[5] arr;         //test array for student ids
+    arr[0] = 800826468;
+    arr[1] = 800821628;
+    arr[2] = 800854631;
+    arr[3] = 800893574;
+    arr[4] = 800876351;
+    int nO = -1; //new order
+    writefln("       Welcome to the Panther's Stadium Ticket Purchasing Program!");
+    writefln("**************************************************************************");
+    writefln("");
+    writefln("Choose an event to begin.");
+    do{ //loop to restart order
+        int id = 0;
+        for (int i = 0; i < events.length; ++i) {
+            Event event = events[i];
+            writefln("\t[%d] %s on %s (%d tickets left)", i, event.getName(), event.getDate(), event.getTickets());
+            id++;
+        }
+        int eventID;
+        int loopRun = 0;
+        do {
+            if (loopRun > 0) {
+                if (eventID < events.length-1 && events[eventID].getTickets() == 0) {
+                    writeln("Error! Event sold out. Please choose another.");
+                } else {
+                    writeln("Error! Invalid event. Please try again.");
+                }
+            }
+            loopRun++;
+            write("Which event would you like to purchase for? ");
+            readf(" %d", &eventID);
+        } while (eventID < 0 || eventID > events.length-1 || events[eventID].getTickets() == 0);
+        activeEvent = events[eventID];
+        writefln("You chose tickets for %s", activeEvent.getName());
+        int ticketAmount;
+        loopRun = 0;
+        do {
+            if (loopRun > 0) {
+                writeln("Error! Invalid amount of tickets.");
+            }
+            loopRun++;
+            writef("How many tickets for this event would you like? There are %d remaining for purchase. ", activeEvent.getTickets());
+            readf(" %d", &ticketAmount);
+        } while(ticketAmount <= 0 || ticketAmount > activeEvent.getTickets());
+        activeEvent.updateTickets(ticketAmount);
+        int a, c, s, st;
+        loopRun = 0;
+        do {
+             if (loopRun > 0) {
+                 writeln("Error! Invalid amount of tickets.");
+             }
+             loopRun++;
+             write("Adult: ");
+             readf(" %d", &a);
+             write("Children: ");
+             readf(" %d", &c);
+             write("Senior: ");
+             readf(" %d", &s);
+             write("Student: ");
+             readf(" %d", &st);
+        } while(a + c + s + st != ticketAmount);
+        int studentID;
+        loopRun = 0;
+        if (st > 0) {
+            do {
+                if (loopRun > 0) {
+                    writeln("Error! Invalid student ID. Changing ticket to adult.");
+                    st--;
+                    a++;
+                }
+                loopRun++;
+                writef("Please enter your student ID.");
+                readf(" %d", &studentID);
+                for (int i = 0; i < arr.length; ++i) {
+                    if (studentID == arr[i]) {
+                        loopRun = 0;
+                    }
+                }
+            } while (loopRun>0);
+        }
+        int total;
+        total = (5*a) + (2*c) + (2*s) + (3*st);
+        writefln("Total price: $%d", total);
+        writefln("Thank you for purchasing tickets to the Panther's Stadium! Would you like to purchase more tickets?");
+        do {
+            writefln("[0] No");
+            writefln("[1] Yes");
+            readf(" %d", &nO);
+        } while(nO != 1 && nO != 0);
+    } while(nO == 1); //end of new order loop
+    writefln("Enjoy your events, Go Panthers!");
+    return 0;
+}
